@@ -1,0 +1,35 @@
+# ====================================================================
+#  بروتوكول تلكم موبايل - ملف التعريف والربط السيادي المفتوح 
+#  Sovereign Utility Node Link - Telcom Mobile Protocol & YER Asset
+# ====================================================================
+
+[DOCUMENT_INFO]
+VERSION = "2026.3.1"
+NETWORK_PASSPHRASE = "Pi Network Sovereign Mainnet"
+UPDATED = "2026-08-25"
+
+[AEC_SOVEREIGN_NODE]
+NAME = "Telcom Mobile Protocol"
+FEDERATION_SERVER = "https://telcom-aec.net"
+AUTH_SERVER = "https://telcom-aec.net"
+TRANSFER_SERVER = "https://telcom-aec.net"
+WEB_AUTH_ENDPOINT = "https://telcom-aec.net/login"
+
+# الربط البرمجي المشفر مع رمز YER السيادي ومحرك المقاصة الهجينة
+[[VALIDATORS]]
+PUBLIC_KEY = "GD_AEC_EAGLE_VALIDATOR_PRIMARY_KEY_SAMPLE_2026"
+HOST = "validator.eagle-aec.net:11625"
+DESCRIPTION = "عقدة الفحص والتدقيق السيادي لمنظومة النسر العربي"
+
+[[ASSETS]]
+CODE = "YER"
+ISSUER = "GD_YER_SOVEREIGN_ISSUER_PUBLIC_KEY_MOCK"
+ANCHOR_ASSET_TYPE = "Sovereign_Local_Stablecoin"
+DESC = "الرمز المحلي المعتمد لمنظومة النسر العربي للمقاصة وصفر خسائر تشغيلية."
+
+# قواعد الصلاحيات والأمان لعمليات استدعاء الدفع الصامت (Automated Clearing Rules)
+[ROUTING_POLICIES]
+ALLOW_SILENT_PROFIT_LOCK = true        # السماح بقفل الـ 10% أرباح بـ Pi في الخلفية صامتاً وفق GCV
+ST_FLOATING_POINT_AUDIT = true         # تفعيل الفحص الإجباري الصارم لمنع الكسور العائمة
+CONFERENCE_FEE_RATE = "0.05"           # تثبيت رسوم تشغيل خوادم البث المرئي والمؤتمرات 5%
+SLIPPAGE_MAX_LIMIT = "0.02"            # الحد الأقصى المسموح به لانحراف سعر المجمع لحماية المنصة 2%

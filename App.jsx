@@ -1,73 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { SovereignLocalization } from './SovereignLocalization';
-import { TelecomMediaCore } from './TelecomMediaCore';
+// إضافة هذه الأجزاء داخل ملف App.jsx الرئيسي في واجهة المستخدم
+import React, { useState } from 'react';
+import { TelcomSupportEngine } from './TelcomSupportEngine';
 
-const langEngine = new SovereignLocalization();
-const mediaCore = new TelecomMediaCore();
+const supportSystem = new TelcomSupportEngine();
 
-export default function TelcomMobileApp() {
-    const [contacts, setContacts] = useState([]);
-    const [newName, setNewName] = useState("");
-    const [newPhone, setNewPhone] = useState("");
-    const [displayCost, setDisplayCost] = useState("0");
-    const [inCall, setInCall] = useState(false);
+// مكون الدعم الفني المدمج بأسفل التطبيق (Support Component)
+export function SupportWidget({ userId, currentLang }) {
+    const [messages, setMessages] = useState([]);
+    const [inputValue, setInputValue] = useState("");
 
-    useEffect(() => {
-        // تحميل جهات الاتصال المحلية فور فتح التطبيق
-        setContacts(mediaCore.getAllContacts());
+    const handleSendMessage = async () => {
+        if (!inputValue.trim()) return;
+
+        const userMsg = { sender: "user", text: inputValue };
+        setMessages(prev => [...prev, userMsg]);
+        setInputValue("");
+
+        // استدعاء محرك الدعم الفني الذكي
+        const response = await supportSystem.processSupportMessage(userId, inputValue, currentLang);
         
-        // جلب السعر التشغيلي الشامل والمحمي (المخفي بداخله الأرباح ورسوم الفيديو) تلقائياً
-        fetch('/api/telecom/calculate-hidden-fees?planUSD=30')
-            .then(res => res.json())
-            .then(data => setDisplayCost(data.displayTotalCostYER));
-    }, []);
-
-    const handleAddContact = () => {
-        if(newName && newPhone) {
-            mediaCore.saveContact(newName, newPhone);
-            setContacts(mediaCore.getAllContacts());
-            setNewName(""); setNewPhone("");
-        }
+        setTimeout(() => {
+            setMessages(prev => [...prev, { sender: "system", text: response.message }]);
+        }, 600); // محاكاة سرعة استجابة الذكاء الاصطناعي
     };
 
     return (
-        <div style={{ padding: '20px', fontFamily: 'Cairo, sans-serif', direction: langEngine.currentLang === 'ar' ? 'rtl' : 'ltr', textAlign: 'center', backgroundColor: '#111', color: '#fff', minHeight: '100vh' }}>
-            <h1 style={{ color: '#d4af37' }}>🦅 {langEngine.get('title')}</h1>
-            <p style={{ letterSpacing: '1px', opacity: 0.8 }}>Sovereign Telecom Matrix</p>
+        <div style={{ marginTop: '40px', padding: '20px', background: '#1c1c1c', borderRadius: '12px', border: '1px solid #333', textAlign: 'right' }}>
+            <h3 style={{ color: '#d4af37', marginTop: 0 }}>💬 مركز الدعم الفني السيادي (AI & البشر)</h3>
             
-            {/* بطاقة التنشيط الذكية والمحمية */}
-            <div style={{ border: '2px solid #d4af37', padding: '25px', borderRadius: '15px', background: '#222', margin: '20px auto', maxWidth: '500px' }}>
-                <p>{langEngine.get('totalCost')}: <span style={{ color: '#00ffcc', fontSize: '20px', fontWeight: 'bold' }}>{displayCost} YER</span></p>
-                <button style={{ background: '#d4af37', color: '#000', border: 'none', padding: '12px 25px', fontSize: '16px', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer', width: '100%' }}>
-                    {langEngine.get('subscribe')}
-                </button>
+            <div style={{ height: '150px', overflowY: 'auto', background: '#111', padding: '10px', borderRadius: '6px', marginBottom: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {messages.map((msg, i) => (
+                    <div key={i} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', background: msg.sender === 'user' ? '#d4af37' : '#222', color: msg.sender === 'user' ? '#000' : '#fff', padding: '6px 12px', borderRadius: '8px', maxWidth: '80%', fontSize: '14px' }}>
+                        {msg.text}
+                    </div>
+                ))}
             </div>
 
-            {/* ميزة الاتصال المرئي فائق الجودة */}
-            <div style={{ margin: '30px auto', maxWidth: '500px', background: '#1a1a1a', padding: '20px', borderRadius: '12px' }}>
-                <h3>📺 {langEngine.get('videoCall')} & {langEngine.get('conference')}</h3>
-                <button onClick={() => setInCall(!inCall)} style={{ background: '#00ffcc', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '5px', cursor: 'pointer', margin: '5px', fontWeight: 'bold' }}>
-                    {inCall ? "إنهاء البث المشفر" : "إنشاء غرفة مؤتمرات النسر العربي"}
-                </button>
-                {inCall && <div style={{ width: '100%', height: '200px', background: '#000', marginTop: '10px', borderRadius: '8px', border: '1px dashed #00ffcc', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>[ بث مرئي P2P مشفر ومؤمن بالكامل ]</div>}
-            </div>
-
-            {/* سجل جهات الاتصال المبسط والمحمي محلياً */}
-            <div style={{ margin: '30px auto', maxWidth: '500px', background: '#1a1a1a', padding: '20px', borderRadius: '12px', textAlign: 'right' }}>
-                <h3>📇 {langEngine.get('contacts')}</h3>
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '15px' }}>
-                    <input type="text" placeholder="الاسم" value={newName} onChange={e => setNewName(e.target.value)} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #d4af37', background: '#333', color: '#fff', flex: 1 }} />
-                    <input type="text" placeholder="الرقم" value={newPhone} onChange={e => setNewPhone(e.target.value)} style={{ padding: '8px', borderRadius: '4px', border: '1px solid #d4af37', background: '#333', color: '#fff', flex: 1 }} />
-                    <button onClick={handleAddContact} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer' }}>إضافة</button>
-                </div>
-                <ul style={{ listStyle: 'none', padding: 0 }}>
-                    {contacts.map(c => (
-                        <li key={c.id} style={{ padding: '10px', borderBottom: '1px solid #333', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span>👤 {c.name}</span>
-                            <span style={{ color: '#00ffcc' }}>📞 {c.phone}</span>
-                        </li>
-                    ))}
-                </ul>
+            <div style={{ display: 'flex', gap: '8px' }}>
+                <input type="text" placeholder="اكتب استفسارك هنا..." value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendMessage()} style={{ flex: 1, padding: '10px', borderRadius: '6px', border: '1px solid #333', background: '#222', color: '#fff' }} />
+                <button onClick={handleSendMessage} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>إرسال</button>
             </div>
         </div>
     );

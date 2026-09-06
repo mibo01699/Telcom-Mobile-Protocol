@@ -1,6 +1,7 @@
 // Sovereign Admin Dashboard - Telcom Mobile Protocol MVNO Engine
 // منظومة النسر العربي (A.E.C.) - إدارة تدوير رأس المال ومصنع الباقات 
 import React, { useState, useEffect } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 export default function SovereignAdminDashboard() {
     const [wholesaleSuppliers, setWholesaleSuppliers] = useState([
@@ -94,6 +95,7 @@ export default function SovereignAdminDashboard() {
                     </button>
                 </div>
             </div>
+            <SpeedInsights />
         </div>
     );
 }

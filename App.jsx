@@ -1,5 +1,6 @@
 // إضافة هذه الأجزاء داخل ملف App.jsx الرئيسي في واجهة المستخدم
 import React, { useState } from 'react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { TelcomSupportEngine } from './TelcomSupportEngine';
 
 const supportSystem = new TelcomSupportEngine();
@@ -40,6 +41,7 @@ export function SupportWidget({ userId, currentLang }) {
                 <input type="text" placeholder="اكتب استفسارك هنا..." value={inputValue} onChange={e => setInputValue(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleSendMessage()} style={{ flex: 1, padding: '10px', borderRadius: '6px', border: '1px solid #333', background: '#222', color: '#fff' }} />
                 <button onClick={handleSendMessage} style={{ background: '#d4af37', color: '#000', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold' }}>إرسال</button>
             </div>
+            <SpeedInsights />
         </div>
     );
 }
